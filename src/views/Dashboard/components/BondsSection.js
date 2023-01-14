@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Grid, ButtonBase, Divider, Icon } from '@material-ui/core';
+import { Box, Typography, Grid, ButtonBase, Divider } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { makeStyles } from '@material-ui/core/styles';

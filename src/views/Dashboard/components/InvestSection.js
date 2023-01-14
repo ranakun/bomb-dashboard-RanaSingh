@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Grid, Typography, ButtonBase, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TokenSymbol from '../../../components/TokenSymbol';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import useTotalValueLocked from '../../../hooks/useTotalValueLocked';
+import CountUp from 'react-countup';
+import useTotalStakedOnBoardroom from '../../../hooks/useTotalStakedOnBoardroom';
+import { getDisplayBalance } from '../../../utils/formatBalance';
+import { FaDiscord } from 'react-icons/fa';
+import { IoDocumentText } from 'react-icons/io5';
+import useStakedBalanceOnBoardroom from '../../../hooks/useStakedBalanceOnBoardroom';
+import usebShareStats from '../../../hooks/usebShareStats';
+import useEarningsOnBoardroom from '../../../hooks/useEarningsOnBoardroom';
+import useBombStats from '../../../hooks/useBombStats';
+import useFetchBoardroomAPR from '../../../hooks/useFetchBoardroomAPR';
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -79,6 +90,21 @@ const DividerLine = ({ full }) => {
 
 const InvestSection = () => {
   const classes = useStyles();
+  const TVL = useTotalValueLocked();
+  const totalStaked = useTotalStakedOnBoardroom();
+  const stakedBalance = useStakedBalanceOnBoardroom();
+  const bShareStats = usebShareStats();
+  const bSharePriceInDollars = useMemo(
+    () => (bShareStats ? Number(bShareStats.priceInDollars).toFixed(2) : null),
+    [bShareStats],
+  );
+  const earnings = useEarningsOnBoardroom();
+  const bombStats = useBombStats();
+  const bombPriceInDollars = useMemo(
+    () => (bombStats ? Number(bombStats.priceInDollars).toFixed(2) : null),
+    [bombStats],
+  );
+  const boardroomAPR = useFetchBoardroomAPR();
 
   return (
     <Box style={{ width: '100%' }}>
@@ -91,12 +117,41 @@ const InvestSection = () => {
           <Grid container spacing={3}>
             <Grid item xs={6}>
               <ButtonBase variant="contained" className={classes.btn2}>
-                <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>Chat on Discord</Typography>
+              <a href="http://discord.bomb.money/" rel="noopener noreferrer" target="_blank" style={{
+                  color:'inherit',
+                  textDecoration:'none'
+                }}>
+                <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box
+                      style={{ padding: '2px 3px', backgroundColor: '#fff', borderRadius: '50%', margin: '0px 4px' }}
+                    >
+                      <FaDiscord size={24} color="#5969b3" />
+                    </Box>
+                    <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>Chat on Discord</Typography>
+                  </Box>
+              </a>
               </ButtonBase>
             </Grid>
             <Grid item xs={6}>
               <ButtonBase variant="contained" className={classes.btn2}>
-                <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>Read Docs</Typography>
+              <a
+                href="https://docs.bomb.money"
+                rel="noopener noreferrer"
+                target="_blank"
+                style={{
+                  color:'inherit',
+                  textDecoration:'none'
+                }}
+              >
+                <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box
+                      style={{ padding: '2px 3px', backgroundColor: '#fff', borderRadius: '50%', margin: '0px 4px' }}
+                    >
+                      <IoDocumentText size={24} color="grey" />
+                    </Box>
+                    <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>Read Docs</Typography>
+                  </Box>
+              </a>
               </ButtonBase>
             </Grid>
           </Grid>
@@ -113,7 +168,9 @@ const InvestSection = () => {
                 <Typography style={{ fontSize: '12px' }}>Stake BSHARE and earn BOMB every epoch</Typography>
               </Grid>
               <Grid item xs={3} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                <Typography>TVL: $1,008,430</Typography>
+                <Typography>
+                 TVL: <span style={{ color: 'white' }}><CountUp style={{ fontSize: '18px' }} end={TVL} separator="," prefix="$" /></span>
+                </Typography>
               </Grid>
 
               <Grid item xs={1}></Grid>
@@ -123,30 +180,30 @@ const InvestSection = () => {
             </Grid>
 
             <Box>
-              <Typography align="right" style={{ fontSize: '12px' }}>
-                Total Staked: <TokenSymbol symbol="BSHARE" size={20} /> 7232
+              <Typography align="right" style={{ fontSize: '16px' }}>
+                Total Staked: <TokenSymbol symbol="BSHARE" size={20} />{getDisplayBalance(totalStaked)}
               </Typography>
 
               <Grid container style={{ marginTop: '10px' }}>
                 <Grid item xs={3}>
                   <Typography style={{ fontSize: '14px' }}>Daily Returns:</Typography>
-                  <Typography style={{ fontSize: '20px' }}>2%</Typography>
+                  <Typography style={{ fontSize: '20px' }}>{(boardroomAPR/365).toFixed(2)}%</Typography>
                 </Grid>
                 <Grid item xs={2}>
                   <Typography style={{ fontSize: '14px' }}>Your Stake:</Typography>
                   <Box style={{ display: 'flex', alignItems: 'center' }}>
                     <TokenSymbol symbol="BSHARE" size={28} />
-                    <Typography>6.0000</Typography>
+                    <Typography>{getDisplayBalance(stakedBalance)}</Typography>
                   </Box>
-                  <Typography>≈ $1171.62</Typography>
+                  <Typography>≈ ${bSharePriceInDollars*getDisplayBalance(stakedBalance)}</Typography>
                 </Grid>
                 <Grid item xs={2}>
                   <Typography style={{ fontSize: '14px' }}>Earned:</Typography>
                   <Box style={{ display: 'flex', alignItems: 'center' }}>
                     <TokenSymbol symbol="BOMB" size={28} />
-                    <Typography>1160.4413</Typography>
+                    <Typography>={getDisplayBalance(earnings)}</Typography>
                   </Box>
-                  <Typography>≈ $298.88</Typography>
+                  <Typography>≈ ${bombPriceInDollars*getDisplayBalance(earnings)}</Typography>
                 </Grid>
                 <Grid item xs={5} className={classes.flex}>
                   <Grid container className={classes.flex} spacing={2}>

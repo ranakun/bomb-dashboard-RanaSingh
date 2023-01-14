@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Typography, Divider, Grid, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MetamaskFox from '../../../assets/img/metamask-fox.svg';
-import CardIcon from '../../../components/CardIcon';
+import ProgressCountdown from './ProgressCountdown';
+import moment from 'moment';
 import TokenSymbol from '../../../components/TokenSymbol';
+import { roundAndFormatNumber } from '../../../0x';
+import useBondStats from '../../../hooks/useBondStats';
+import usebShareStats from '../../../hooks/usebShareStats';
+import useBombStats from '../../../hooks/useBombStats';
+import useCurrentEpoch from '../../../hooks/useCurrentEpoch';
+import useTreasuryAllocationTimes from '../../../hooks/useTreasuryAllocationTimes';
+import useTotalValueLocked from '../../../hooks/useTotalValueLocked';
+import CountUp from 'react-countup';
 
 const useStyles = makeStyles((theme) => ({
   item: {
@@ -49,10 +58,10 @@ const RowData = ({ name, currentSupply, totalSupply, price1, price2, icon }) => 
       </Grid>
       <Grid item xs={3} className={classes.item} style={{ flexDirection: 'column' }}>
         <Typography style={{ color: 'white', width: '100%', fontSize: 15 }} align="center">
-          {price1}
+          ${price1}
         </Typography>
         <Typography style={{ color: 'white', width: '100%', fontSize: 15 }} align="center">
-          {price2}
+          {price2} BTCB
         </Typography>
       </Grid>
       <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -66,6 +75,45 @@ const RowData = ({ name, currentSupply, totalSupply, price1, price2, icon }) => 
 
 const BombFinanceSummaryCard = () => {
   const classes = useStyles();
+  const bombStats = useBombStats();
+  const bShareStats = usebShareStats();
+  const tBondStats = useBondStats();
+  const bombPriceInDollars = useMemo(
+    () => (bombStats ? Number(bombStats.priceInDollars).toFixed(2) : null),
+    [bombStats],
+  );
+  const bombPriceInBNB = useMemo(() => (bombStats ? Number(bombStats.tokenInFtm).toFixed(4) : null), [bombStats]);
+  const bombCirculatingSupply = useMemo(() => (bombStats ? String(bombStats.circulatingSupply) : null), [bombStats]);
+  const bombTotalSupply = useMemo(() => (bombStats ? String(bombStats.totalSupply) : null), [bombStats]);
+
+  const bSharePriceInDollars = useMemo(
+    () => (bShareStats ? Number(bShareStats.priceInDollars).toFixed(2) : null),
+    [bShareStats],
+  );
+  const bSharePriceInBNB = useMemo(
+    () => (bShareStats ? Number(bShareStats.tokenInFtm).toFixed(4) : null),
+    [bShareStats],
+  );
+  const bShareCirculatingSupply = useMemo(
+    () => (bShareStats ? String(bShareStats.circulatingSupply) : null),
+    [bShareStats],
+  );
+  const bShareTotalSupply = useMemo(() => (bShareStats ? String(bShareStats.totalSupply) : null), [bShareStats]);
+
+  const tBondPriceInDollars = useMemo(
+    () => (tBondStats ? Number(tBondStats.priceInDollars).toFixed(2) : null),
+    [tBondStats],
+  );
+  const tBondPriceInBNB = useMemo(() => (tBondStats ? Number(tBondStats.tokenInFtm).toFixed(4) : null), [tBondStats]);
+  const tBondCirculatingSupply = useMemo(
+    () => (tBondStats ? String(tBondStats.circulatingSupply) : null),
+    [tBondStats],
+  );
+  const tBondTotalSupply = useMemo(() => (tBondStats ? String(tBondStats.totalSupply) : null), [tBondStats]);
+  const currentEpoch = useCurrentEpoch();
+  const { to } = useTreasuryAllocationTimes();
+  const TVL = useTotalValueLocked();
+
 
   return (
     <Box style={{ backgroundColor: 'rgba(0,0,0,0.2)', padding: '20px 40px', width: '100%' }}>
@@ -94,10 +142,10 @@ const BombFinanceSummaryCard = () => {
 
           <RowData
             name={'$BOMB'}
-            currentSupply="8.66M"
-            totalSupply="60.9k"
-            price1="$0.24"
-            price2="1.05 BTCB"
+            currentSupply={roundAndFormatNumber(bombCirculatingSupply, 2)}
+            totalSupply={roundAndFormatNumber(bombTotalSupply, 2)}
+            price1={bombPriceInDollars ? roundAndFormatNumber(bombPriceInDollars, 2) : '-.--'}
+            price2={bombPriceInBNB ? bombPriceInBNB : '-.----'}
             icon="BOMB"
           />
 
@@ -105,10 +153,10 @@ const BombFinanceSummaryCard = () => {
 
           <RowData
             name="$BSHARE"
-            currentSupply="11.43k"
-            totalSupply="8.49M"
-            price1="$300"
-            price2="13000 BTCB"
+            currentSupply={roundAndFormatNumber(bShareCirculatingSupply, 2)}
+            totalSupply={roundAndFormatNumber(bShareTotalSupply, 2)}
+            price1={bSharePriceInDollars ? roundAndFormatNumber(bSharePriceInDollars, 2) : '-.--'}
+            price2={bSharePriceInBNB ? bSharePriceInBNB : '-.----'}
             icon="BSHARE"
           />
 
@@ -116,10 +164,10 @@ const BombFinanceSummaryCard = () => {
 
           <RowData
             name="$BBOND"
-            currentSupply="20.00k"
-            totalSupply="175k"
-            price1="$0.28"
-            price2="1.15 BTCB"
+            currentSupply={roundAndFormatNumber(tBondCirculatingSupply, 2)}
+            totalSupply={roundAndFormatNumber(tBondTotalSupply, 2)}
+            price1={tBondPriceInDollars ? roundAndFormatNumber(tBondPriceInDollars, 2) : '-.--'}
+            price2={tBondPriceInBNB ? tBondPriceInBNB : '-.----'}
             icon="BBOND"
           />
 
@@ -133,11 +181,11 @@ const BombFinanceSummaryCard = () => {
             Current Epoch
           </Typography>
           <Typography style={{ color: 'white', width: '100%', fontSize: 28 }} align="center">
-            258
+            {Number(currentEpoch)}
           </Typography>
           <Divider orientation="horizontal" style={{ backgroundColor: 'rgba(255,255,255,0.4)', marginTop: '6px' }} />
           <Typography style={{ color: 'white', width: '100%', fontSize: 28 }} align="center">
-            03:38:36
+          <ProgressCountdown base={moment().toDate()} hideBar={true} deadline={to} />
           </Typography>
           <Typography style={{ color: 'white', width: '100%', fontSize: 20 }} align="center">
             Next Epoch in
@@ -147,7 +195,7 @@ const BombFinanceSummaryCard = () => {
             Live TWAP: <span style={{ color: 'green' }}>1.17</span>
           </Typography>
           <Typography style={{ color: 'white', width: '100%', fontSize: 14 }} align="center">
-            TVL: <span style={{ color: 'green' }}>$5,002,221</span>
+            TVL: <span style={{ color: 'green' }}><CountUp style={{ fontSize: '14px' }} end={TVL} separator="," prefix="$" /></span>
           </Typography>
           <Typography style={{ color: 'white', width: '100%', fontSize: 14 }} align="center">
             Last Epoch TWAP: <span style={{ color: 'green' }}>1.22</span>
