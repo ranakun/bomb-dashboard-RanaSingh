@@ -10,6 +10,8 @@ import CountUp from 'react-countup';
 import useEarnings from '../../../hooks/useEarnings';
 import {getDisplayBalance} from '../../../utils/formatBalance';
 import usebShareStats from '../../../hooks/usebShareStats';
+import useStakedBalance from '../../../hooks/useStakedBalance';
+import useStakedTokenPriceInDollars from '../../../hooks/useStakedTokenPriceInDollars';
 
 const DividerLine = ({ full }) => {
   return (
@@ -70,6 +72,26 @@ const BombFarmsSection = () => {
     () => (bShareStats ? Number(bShareStats.priceInDollars).toFixed(2) : null),
     [bShareStats],
   );
+  const BombBTCBstakedBalance = useStakedBalance(activeBanks[0].contract, activeBanks[0].poolId);
+  const BombBTCBstakedTokenPriceInDollars = useStakedTokenPriceInDollars(activeBanks[0].depositTokenName, activeBanks[0].depositToken);
+  const BshareBNBstakedBalance = useStakedBalance(activeBanks[1].contract, activeBanks[1].poolId);
+  const BshareBNBstakedTokenPriceInDollars = useStakedTokenPriceInDollars(activeBanks[1].depositTokenName, activeBanks[1].depositToken);
+  const BombBTCBtokenPriceInDollars = useMemo(
+    () => (BombBTCBstakedTokenPriceInDollars ? BombBTCBstakedTokenPriceInDollars : null),
+    [BombBTCBstakedTokenPriceInDollars],
+  );
+  const BombBTCBearnedInDollars = (
+    Number(BombBTCBtokenPriceInDollars) * Number(getDisplayBalance(BombBTCBstakedBalance, activeBanks[0].depositToken.decimal))
+  ).toFixed(2);
+  const BshareBNBtokenPriceInDollars = useMemo(
+    () => (BshareBNBstakedTokenPriceInDollars ? BshareBNBstakedTokenPriceInDollars : null),
+    [BshareBNBstakedTokenPriceInDollars],
+  );
+  const BshareBNBearnedInDollars = (
+    Number(BshareBNBtokenPriceInDollars) * Number(getDisplayBalance(BshareBNBstakedBalance, activeBanks[1].depositToken.decimal))
+  ).toFixed(2);
+
+
 
   return (
     <Box style={{ width: '100%' }}>
@@ -126,9 +148,9 @@ const BombFarmsSection = () => {
                   <Typography style={{ fontSize: '14px' }}>Your Stake:</Typography>
                   <Box style={{ display: 'flex', alignItems: 'center' }}>
                     <TokenSymbol symbol="BOMB-BTCB-LP" size={28} />
-                    <Typography>6.0000</Typography>
+                    <Typography>{getDisplayBalance(BombBTCBstakedBalance, activeBanks[0].depositToken.decimal)}</Typography>
                   </Box>
-                  <Typography>≈ $1171.62</Typography>
+                  <Typography>≈ ${BombBTCBearnedInDollars}</Typography>
                 </Grid>
                 <Grid item xs={2}>
                   <Typography style={{ fontSize: '14px' }}>Earned: </Typography>
@@ -203,9 +225,9 @@ const BombFarmsSection = () => {
                 <Typography style={{ fontSize: '14px' }}>Your Stake:</Typography>
                 <Box style={{ display: 'flex', alignItems: 'center' }}>
                   <TokenSymbol symbol="BSHARE-BNB-LP" size={28} />
-                  <Typography>6.0000</Typography>
+                  <Typography>{getDisplayBalance(BshareBNBstakedBalance, activeBanks[1].depositToken.decimal)}</Typography>
                 </Box>
-                <Typography>≈ $1171.62</Typography>
+                <Typography>≈ ${BshareBNBearnedInDollars}</Typography>
               </Grid>
               <Grid item xs={2}>
                 <Typography style={{ fontSize: '14px' }}>Earned:</Typography>

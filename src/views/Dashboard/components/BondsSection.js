@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Typography, Grid, ButtonBase, Divider } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { makeStyles } from '@material-ui/core/styles';
 import TokenSymbol from '../../../components/TokenSymbol';
+import useBondStats from '../../../hooks/useBondStats';
+import useBombFinance from '../../../hooks/useBombFinance';
+import useTokenBalance from '../../../hooks/useTokenBalance';
+import {getDisplayBalance} from '../../../utils/formatBalance';
 
 const useStyles = makeStyles((theme) => ({
   flex: {
@@ -22,6 +26,10 @@ const useStyles = makeStyles((theme) => ({
 
 const BondsSection = () => {
   const classes = useStyles();
+  const tBondStats = useBondStats();
+  const tBondPriceInBNB = useMemo(() => (tBondStats ? Number(tBondStats.tokenInFtm).toFixed(4) : null), [tBondStats]);
+  const bombFinance = useBombFinance();
+  const bondBalance = useTokenBalance(bombFinance?.BBOND);
 
   return (
     <Box style={{ width: '100%' }}>
@@ -39,13 +47,13 @@ const BondsSection = () => {
         <Grid container style={{ marginTop: '15px' }}>
           <Grid item xs={4} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <Typography>Current Price: &#40;Bomb&#41;&#94;2</Typography>
-            <Typography style={{ fontSize: '18px' }}>BBOND = 6.2872 BTCB</Typography>
+            <Typography style={{ fontSize: '18px' }}>BBOND = {tBondPriceInBNB} BTCB</Typography>
           </Grid>
           <Grid item xs={3} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <Typography>Available to redeem:</Typography>
             <Box style={{ display: 'flex', alignItems: 'center' }}>
-              <TokenSymbol symbol="BBOND" size={50} />
-              <Typography style={{ fontSize: '20px' }}>456</Typography>
+              <TokenSymbol symbol="BBOND" size={40} />
+              <Typography style={{ fontSize: '50px' }}>{Number(getDisplayBalance(bondBalance))}</Typography>
             </Box>
           </Grid>
           <Grid item xs={5}>
