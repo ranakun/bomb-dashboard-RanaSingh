@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Grid, Typography, ButtonBase, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TokenSymbol from '../../../components/TokenSymbol';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import useBanks from '../../../hooks/useBanks';
+import useStatsForPool from '../../../hooks/useStatsForPool';
+import CountUp from 'react-countup';
+import useEarnings from '../../../hooks/useEarnings';
+import {getDisplayBalance} from '../../../utils/formatBalance';
+import usebShareStats from '../../../hooks/usebShareStats';
 
 const DividerLine = ({ full }) => {
   return (
@@ -53,6 +59,17 @@ const useStyles = makeStyles((theme) => ({
 
 const BombFarmsSection = () => {
   const classes = useStyles();
+  const [banks] = useBanks();
+  const activeBanks = banks.filter((bank) => !bank.finished && bank.sectionInUI === 3);
+  let statsOnPoolBombBTCB = useStatsForPool(activeBanks[0]);
+  let statsOnPoolBshareBNB = useStatsForPool(activeBanks[1]);
+  const BombBTCBearnings = useEarnings(activeBanks[0].contract, activeBanks[0].earnTokenName, activeBanks[0].poolId);
+  const BshareBNBearnings = useEarnings(activeBanks[1].contract, activeBanks[1].earnTokenName, activeBanks[1].poolId);
+  const bShareStats = usebShareStats();
+  const bSharePriceInDollars = useMemo(
+    () => (bShareStats ? Number(bShareStats.priceInDollars).toFixed(2) : null),
+    [bShareStats],
+  );
 
   return (
     <Box style={{ width: '100%' }}>
@@ -84,7 +101,13 @@ const BombFarmsSection = () => {
                 </Box>
               </Grid>
               <Grid item xs={3} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                <Typography>TVL: $1,008,430</Typography>
+                <Typography>
+                  TVL: <span style={{ color: 'white' }}>
+                    {statsOnPoolBombBTCB?.TVL && (
+                      <CountUp style={{ fontSize: '16px' }} end={parseInt(statsOnPoolBombBTCB?.TVL)} separator="," prefix="$" />
+                    )}
+                    </span>
+                  </Typography>
               </Grid>
 
               <Grid item xs={1}></Grid>
@@ -97,23 +120,23 @@ const BombFarmsSection = () => {
               <Grid container style={{ marginTop: '10px' }}>
                 <Grid item xs={3}>
                   <Typography style={{ fontSize: '14px' }}>Daily Returns:</Typography>
-                  <Typography style={{ fontSize: '20px' }}>2%</Typography>
+                  <Typography style={{ fontSize: '20px' }}>{statsOnPoolBombBTCB?.dailyAPR}%</Typography>
                 </Grid>
                 <Grid item xs={2}>
                   <Typography style={{ fontSize: '14px' }}>Your Stake:</Typography>
                   <Box style={{ display: 'flex', alignItems: 'center' }}>
-                    <TokenSymbol symbol="BSHARE" size={28} />
+                    <TokenSymbol symbol="BOMB-BTCB-LP" size={28} />
                     <Typography>6.0000</Typography>
                   </Box>
                   <Typography>≈ $1171.62</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography style={{ fontSize: '14px' }}>Earned:</Typography>
+                  <Typography style={{ fontSize: '14px' }}>Earned: </Typography>
                   <Box style={{ display: 'flex', alignItems: 'center' }}>
-                    <TokenSymbol symbol="BOMB" size={28} />
-                    <Typography>1160.4413</Typography>
+                    <TokenSymbol symbol="BSHARE" size={28} />
+                    <Typography>{getDisplayBalance(BombBTCBearnings)}</Typography>
                   </Box>
-                  <Typography>≈ $298.88</Typography>
+                  <Typography>≈ ${bSharePriceInDollars*parseInt(getDisplayBalance(BombBTCBearnings))}</Typography>
                 </Grid>
                 <Grid item xs={5} className={classes.flex}>
                   <Grid container className={classes.flex} spacing={2}>
@@ -147,7 +170,7 @@ const BombFarmsSection = () => {
         <Box style={{ padding: '10px 20px' }}>
           <Grid container>
             <Grid item xs={1}>
-              <TokenSymbol symbol="BOMB-BTCB-LP" size={50} />
+              <TokenSymbol symbol="BSHARE-BNB-LP" size={50} />
             </Grid>
             <Grid item xs={8}>
               <Box style={{ display: 'flex', alignItems: 'center' }}>
@@ -156,7 +179,13 @@ const BombFarmsSection = () => {
               </Box>
             </Grid>
             <Grid item xs={3} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-              <Typography>TVL: $1,008,430</Typography>
+              <Typography>
+                TVL: <span style={{ color: 'white' }}>
+                    {statsOnPoolBshareBNB?.TVL && (
+                      <CountUp style={{ fontSize: '16px' }} end={parseInt(statsOnPoolBshareBNB?.TVL)} separator="," prefix="$" />
+                    )}
+                    </span>
+                </Typography>
             </Grid>
 
             <Grid item xs={1}></Grid>
@@ -168,12 +197,12 @@ const BombFarmsSection = () => {
             <Grid container style={{ marginTop: '10px' }}>
               <Grid item xs={3}>
                 <Typography style={{ fontSize: '14px' }}>Daily Returns:</Typography>
-                <Typography style={{ fontSize: '20px' }}>2%</Typography>
+                <Typography style={{ fontSize: '20px' }}>{statsOnPoolBshareBNB?.dailyAPR}%</Typography>
               </Grid>
               <Grid item xs={2}>
                 <Typography style={{ fontSize: '14px' }}>Your Stake:</Typography>
                 <Box style={{ display: 'flex', alignItems: 'center' }}>
-                  <TokenSymbol symbol="BSHARE" size={28} />
+                  <TokenSymbol symbol="BSHARE-BNB-LP" size={28} />
                   <Typography>6.0000</Typography>
                 </Box>
                 <Typography>≈ $1171.62</Typography>
@@ -181,10 +210,10 @@ const BombFarmsSection = () => {
               <Grid item xs={2}>
                 <Typography style={{ fontSize: '14px' }}>Earned:</Typography>
                 <Box style={{ display: 'flex', alignItems: 'center' }}>
-                  <TokenSymbol symbol="BOMB" size={28} />
-                  <Typography>1160.4413</Typography>
+                  <TokenSymbol symbol="BSHARE" size={28} />
+                  <Typography>{getDisplayBalance(BshareBNBearnings)}</Typography>
                 </Box>
-                <Typography>≈ $298.88</Typography>
+                <Typography>≈ ${bSharePriceInDollars*parseInt(getDisplayBalance(BshareBNBearnings))}</Typography>
               </Grid>
               <Grid item xs={5} className={classes.flex}>
                 <Grid container className={classes.flex} spacing={2}>

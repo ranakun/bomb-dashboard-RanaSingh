@@ -4,8 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import TokenSymbol from '../../../components/TokenSymbol';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import useTotalValueLocked from '../../../hooks/useTotalValueLocked';
-import CountUp from 'react-countup';
 import useTotalStakedOnBoardroom from '../../../hooks/useTotalStakedOnBoardroom';
 import { getDisplayBalance } from '../../../utils/formatBalance';
 import { FaDiscord } from 'react-icons/fa';
@@ -15,6 +13,7 @@ import usebShareStats from '../../../hooks/usebShareStats';
 import useEarningsOnBoardroom from '../../../hooks/useEarningsOnBoardroom';
 import useBombStats from '../../../hooks/useBombStats';
 import useFetchBoardroomAPR from '../../../hooks/useFetchBoardroomAPR';
+import CountUp from 'react-countup';
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -90,7 +89,6 @@ const DividerLine = ({ full }) => {
 
 const InvestSection = () => {
   const classes = useStyles();
-  const TVL = useTotalValueLocked();
   const totalStaked = useTotalStakedOnBoardroom();
   const stakedBalance = useStakedBalanceOnBoardroom();
   const bShareStats = usebShareStats();
@@ -98,7 +96,7 @@ const InvestSection = () => {
     () => (bShareStats ? Number(bShareStats.priceInDollars).toFixed(2) : null),
     [bShareStats],
   );
-  const earnings = useEarningsOnBoardroom();
+  const BombEarnings = useEarningsOnBoardroom();
   const bombStats = useBombStats();
   const bombPriceInDollars = useMemo(
     () => (bombStats ? Number(bombStats.priceInDollars).toFixed(2) : null),
@@ -169,7 +167,7 @@ const InvestSection = () => {
               </Grid>
               <Grid item xs={3} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
                 <Typography>
-                 TVL: <span style={{ color: 'white' }}><CountUp style={{ fontSize: '18px' }} end={TVL} separator="," prefix="$" /></span>
+                 TVL: <span style={{ color: 'white' }}><CountUp style={{ fontSize: '16px' }} end={parseInt(bSharePriceInDollars*getDisplayBalance(totalStaked))} separator="," prefix="$" /></span>
                 </Typography>
               </Grid>
 
@@ -181,7 +179,7 @@ const InvestSection = () => {
 
             <Box>
               <Typography align="right" style={{ fontSize: '16px' }}>
-                Total Staked: <TokenSymbol symbol="BSHARE" size={20} />{getDisplayBalance(totalStaked)}
+                Total Staked: <TokenSymbol symbol="BSHARE" size={20} />{(parseFloat(getDisplayBalance(totalStaked))).toFixed(2)}
               </Typography>
 
               <Grid container style={{ marginTop: '10px' }}>
@@ -201,9 +199,9 @@ const InvestSection = () => {
                   <Typography style={{ fontSize: '14px' }}>Earned:</Typography>
                   <Box style={{ display: 'flex', alignItems: 'center' }}>
                     <TokenSymbol symbol="BOMB" size={28} />
-                    <Typography>={getDisplayBalance(earnings)}</Typography>
+                    <Typography>={getDisplayBalance(BombEarnings)}</Typography>
                   </Box>
-                  <Typography>≈ ${bombPriceInDollars*getDisplayBalance(earnings)}</Typography>
+                  <Typography>≈ ${bombPriceInDollars*getDisplayBalance(BombEarnings)}</Typography>
                 </Grid>
                 <Grid item xs={5} className={classes.flex}>
                   <Grid container className={classes.flex} spacing={2}>
