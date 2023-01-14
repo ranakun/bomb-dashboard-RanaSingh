@@ -292,6 +292,11 @@ export class BombFinance {
     return Treasury.getBombUpdatedPrice();
   }
 
+  async getPreviousEpochTWAP(): Promise<BigNumber> {
+    const { Treasury } = this.contracts;
+    return Treasury.previousEpochBombPrice();
+  }
+
   // async getBombPegTWAP(): Promise<any> {
   //   const { Treasury } = this.contracts;
   //   const updatedPrice = Treasury.getBombUpdatedPrice();

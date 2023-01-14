@@ -125,9 +125,9 @@ const BombFarmsSection = () => {
               <Grid item xs={3} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
                 <Typography>
                   TVL: <span style={{ color: 'white' }}>
-                    {statsOnPoolBombBTCB?.TVL && (
+                    {statsOnPoolBombBTCB?.TVL ? (
                       <CountUp style={{ fontSize: '16px' }} end={parseInt(statsOnPoolBombBTCB?.TVL)} separator="," prefix="$" />
-                    )}
+                    ) : (<span>$0.00</span>)}
                     </span>
                   </Typography>
               </Grid>
@@ -142,7 +142,7 @@ const BombFarmsSection = () => {
               <Grid container style={{ marginTop: '10px' }}>
                 <Grid item xs={3}>
                   <Typography style={{ fontSize: '14px' }}>Daily Returns:</Typography>
-                  <Typography style={{ fontSize: '20px' }}>{statsOnPoolBombBTCB?.dailyAPR}%</Typography>
+                  <Typography style={{ fontSize: '20px' }}>{(statsOnPoolBombBTCB?.dailyAPR)|| '0.00'}%</Typography>
                 </Grid>
                 <Grid item xs={2}>
                   <Typography style={{ fontSize: '14px' }}>Your Stake:</Typography>
@@ -203,9 +203,9 @@ const BombFarmsSection = () => {
             <Grid item xs={3} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
               <Typography>
                 TVL: <span style={{ color: 'white' }}>
-                    {statsOnPoolBshareBNB?.TVL && (
+                    {statsOnPoolBshareBNB?.TVL ? (
                       <CountUp style={{ fontSize: '16px' }} end={parseInt(statsOnPoolBshareBNB?.TVL)} separator="," prefix="$" />
-                    )}
+                    ): (<span>$0.00</span>)}
                     </span>
                 </Typography>
             </Grid>
@@ -219,7 +219,7 @@ const BombFarmsSection = () => {
             <Grid container style={{ marginTop: '10px' }}>
               <Grid item xs={3}>
                 <Typography style={{ fontSize: '14px' }}>Daily Returns:</Typography>
-                <Typography style={{ fontSize: '20px' }}>{statsOnPoolBshareBNB?.dailyAPR}%</Typography>
+                <Typography style={{ fontSize: '20px' }}>{(statsOnPoolBshareBNB?.dailyAPR) || '0.00'}%</Typography>
               </Grid>
               <Grid item xs={2}>
                 <Typography style={{ fontSize: '14px' }}>Your Stake:</Typography>

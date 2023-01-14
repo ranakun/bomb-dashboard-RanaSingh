@@ -108,7 +108,13 @@ const InvestSection = () => {
     <Box style={{ width: '100%' }}>
       <Grid container style={{ padding: '20px 0px' }}>
         <Grid item xs={8} style={{ padding: '0px 15px 0px 0px' }}>
-          <Typography className={classes.link}>Read Investment Strategy &gt;</Typography>
+          <a href="https://docs.bomb.money/welcome-start-here/strategies" rel="noopener noreferrer" target="_blank" style={{
+            color:'inherit',
+            textDecoration:'none'
+          }}>
+                  <Typography className={classes.link}>Read Investment Strategy &gt;</Typography>
+                
+              </a>
           <ButtonBase variant="contained" className={classes.btn}>
             <Typography style={{ fontSize: '18px', fontWeight: 'bold' }}>Invest Now</Typography>
           </ButtonBase>

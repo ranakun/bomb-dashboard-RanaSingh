@@ -13,6 +13,8 @@ import useCurrentEpoch from '../../../hooks/useCurrentEpoch';
 import useTreasuryAllocationTimes from '../../../hooks/useTreasuryAllocationTimes';
 import useTotalValueLocked from '../../../hooks/useTotalValueLocked';
 import CountUp from 'react-countup';
+import useCashPriceInEstimatedTWAP from '../../../hooks/useCashPriceInEstimatedTWAP';
+import useCashPriceInPreviousEpochTWAP from '../../../hooks/useCashPriceInPreviousEpochTWAP';
 
 const useStyles = makeStyles((theme) => ({
   item: {
@@ -113,6 +115,13 @@ const BombFinanceSummaryCard = () => {
   const currentEpoch = useCurrentEpoch();
   const { to } = useTreasuryAllocationTimes();
   const TVL = useTotalValueLocked();
+  const cashStat = useCashPriceInEstimatedTWAP();
+  const scalingFactor = useMemo(() => (cashStat ? Number(cashStat.priceInDollars).toFixed(4) : null), [cashStat]);
+  const cashPrice = useCashPriceInPreviousEpochTWAP();
+  const bondScale = (Number(cashPrice) / 100000000000000).toFixed(4); 
+
+
+
 
 
   return (
@@ -192,13 +201,13 @@ const BombFinanceSummaryCard = () => {
           </Typography>
           <Divider orientation="horizontal" style={{ backgroundColor: 'rgba(255,255,255,0.4)', marginTop: '6px' }} />
           <Typography style={{ color: 'white', width: '100%', fontSize: 14 }} align="center">
-            Live TWAP: <span style={{ color: 'green' }}>1.17</span>
+            Live TWAP: <span style={{ color: 'green' }}>{scalingFactor}</span>
           </Typography>
           <Typography style={{ color: 'white', width: '100%', fontSize: 14 }} align="center">
             TVL: <span style={{ color: 'green' }}><CountUp style={{ fontSize: '14px' }} end={TVL} separator="," prefix="$" /></span>
           </Typography>
           <Typography style={{ color: 'white', width: '100%', fontSize: 14 }} align="center">
-            Last Epoch TWAP: <span style={{ color: 'green' }}>1.22</span>
+            Last Epoch TWAP: <span style={{ color: 'green' }}>{bondScale || '-'}</span>
           </Typography>
         </Grid>
       </Grid>
