@@ -296,9 +296,8 @@ const InvestSection = () => {
                     </Grid>
                     <Grid item xs={6}>
                       <ButtonBase
-                        className={!canWithdrawFromBoardroom || approveStatus !== ApprovalState.APPROVED ? classes.chip2_disabled : classes.chip2}
-                        // cannot withdraw if token not approved
-                        disabled={!canWithdrawFromBoardroom || approveStatus !== ApprovalState.APPROVED}
+                        className={!canWithdrawFromBoardroom ? classes.chip2_disabled : classes.chip2}
+                        disabled={!canWithdrawFromBoardroom}
                         onClick={onPresentWithdraw}
                       >
                         <Typography>Withdraw</Typography>
