@@ -68,7 +68,7 @@ const BondsSection = () => {
               </Box>
               <Divider style={{ backgroundColor: 'white', margin: '10px 0px' }} />
               <Box className={classes.flex}>
-                <Typography>Bomb is over peg</Typography>
+                <Typography>Redeem Bomb</Typography>
                 <ButtonBase style={{ padding: '2px 10px', border: '1px solid white', borderRadius: '16px' }}>
                   <Typography style={{ textAlign: 'center' }}>Redeem</Typography>
                   <ArrowDownwardIcon />

@@ -15,6 +15,7 @@ import useTotalValueLocked from '../../../hooks/useTotalValueLocked';
 import CountUp from 'react-countup';
 import useCashPriceInEstimatedTWAP from '../../../hooks/useCashPriceInEstimatedTWAP';
 import useCashPriceInPreviousEpochTWAP from '../../../hooks/useCashPriceInPreviousEpochTWAP';
+import useBombFinance from '../../../hooks/useBombFinance';
 
 const useStyles = makeStyles((theme) => ({
   item: {
@@ -41,7 +42,7 @@ const DividerLine = ({ full }) => {
   );
 };
 
-const RowData = ({ name, currentSupply, totalSupply, price1, price2, icon }) => {
+const RowData = ({ name, currentSupply, totalSupply, price1, price2, icon, btnFunc }) => {
   const classes = useStyles();
 
   return (
@@ -67,7 +68,7 @@ const RowData = ({ name, currentSupply, totalSupply, price1, price2, icon }) => 
         </Typography>
       </Grid>
       <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <IconButton>
+        <IconButton onClick={btnFunc}>
           <img alt="metamask fox" style={{ width: '25px' }} src={MetamaskFox} />
         </IconButton>
       </Grid>
@@ -119,7 +120,7 @@ const BombFinanceSummaryCard = () => {
   const scalingFactor = useMemo(() => (cashStat ? Number(cashStat.priceInDollars).toFixed(4) : null), [cashStat]);
   const cashPrice = useCashPriceInPreviousEpochTWAP();
   const bondScale = (Number(cashPrice) / 100000000000000).toFixed(4); 
-
+  const bombFinance = useBombFinance();
 
 
 
@@ -156,6 +157,9 @@ const BombFinanceSummaryCard = () => {
             price1={bombPriceInDollars ? roundAndFormatNumber(bombPriceInDollars, 2) : '-.--'}
             price2={bombPriceInBNB ? bombPriceInBNB : '-.----'}
             icon="BOMB"
+            btnFunc={() => {
+              bombFinance.watchAssetInMetamask('BOMB');
+            }}
           />
 
           <DividerLine full />
@@ -167,6 +171,9 @@ const BombFinanceSummaryCard = () => {
             price1={bSharePriceInDollars ? roundAndFormatNumber(bSharePriceInDollars, 2) : '-.--'}
             price2={bSharePriceInBNB ? bSharePriceInBNB : '-.----'}
             icon="BSHARE"
+            btnFunc={() => {
+              bombFinance.watchAssetInMetamask('BSHARE');
+            }}
           />
 
           <DividerLine full />
@@ -178,6 +185,9 @@ const BombFinanceSummaryCard = () => {
             price1={tBondPriceInDollars ? roundAndFormatNumber(tBondPriceInDollars, 2) : '-.--'}
             price2={tBondPriceInBNB ? tBondPriceInBNB : '-.----'}
             icon="BBOND"
+            btnFunc={() => {
+              bombFinance.watchAssetInMetamask('BBOND');
+            }}
           />
 
           <DividerLine />
