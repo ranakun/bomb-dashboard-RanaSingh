@@ -1,4 +1,4 @@
-# 🪦Welcome to the Bomb.money ecosystem🪦
+# 🪦Welcome to the Bomb.money ecosystem, this is a fork of the original repo. I have added a dashboard to their original website.🪦
 
 Thanks for taking the time to contribute!
 You can start by reading our [Contribution guidelines](CONTRIBUTING.md) first.
